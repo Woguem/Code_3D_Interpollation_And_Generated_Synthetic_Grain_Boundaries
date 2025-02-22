@@ -210,29 +210,24 @@ for n_i in range(1, num_images+1, 1):
         
 
 
-# Define the directory in which to save images and the JSON file
 
-save_dir = r"C:\Users\p09276\Post_doc_Yen_Fred\Projet_Machine_Learning_Julien\GB_Cu_001_Generation\Generated_Images"   
-
-# Create folder if none exists
-os.makedirs(save_dir, exist_ok=True) 
-
-def extract_dislocation_cores(images, threshold=0.4, output_file="Grain_Boundary.json"): #, output_file_1="Max_Dislocations.json"
+def extract_dislocation_cores(images, save_dir, threshold=0.4): 
     """
     Detects all pixels with maximum intensity in each image.
     If the maximum intensity is below the threshold, the image is empty.
 
     Args:
         images (dict): Dictionary containing generated images { "key_name": np.array }.
+        save_dir (str): Directory where JSON files will be saved.
         threshold (float): Minimum threshold for an image to be considered as containing dislocations.
-        output_file (str): Output JSON file name (full path if necessary).
+        
 
     Returns:
             None (writes a JSON file containing annotations).
     """
     annotations = {}
     
-    #max_dislocation = 0
+    max_dislocation = 0
 
     for i, image in enumerate(images.values()):
         dislocations = []
@@ -256,13 +251,13 @@ def extract_dislocation_cores(images, threshold=0.4, output_file="Grain_Boundary
             # Grouping connected maxima into regions
             labeled_maxima, num_features = ndi.label(local_maxima)
         
-            #if num_features > max_dislocation : # Sert à récuperer le nombre maximale de dislocations qu'il peut y avoir dans une image
+            if num_features > max_dislocation : # Sert à récuperer le nombre maximale de dislocations qu'il peut y avoir dans une image
             
-            #max_dislocation = num_features
+                max_dislocation = num_features
 
             # Find the center of each detected region using the barycenter
             centers = ndi.center_of_mass(image, labeled_maxima, range(1, num_features + 1))
-            centers = np.array(centers).astype(int)  # Convert to integers
+            centers = np.round(centers).astype(int)  # Convert to integers
             # Adding centers detected as dislocations
             for y, x in centers:
                 dislocations.append({"x": int(x), "y": int(y), "p1": 1, "p0": 0})
@@ -272,13 +267,13 @@ def extract_dislocation_cores(images, threshold=0.4, output_file="Grain_Boundary
 
     
     # Create a complete path for the output JSON file
-    #output_file_1 = os.path.join(save_dir, 'Max_Dislocations.json')
+    output_file_1 = os.path.join(save_dir, 'Max_Dislocations.json')
     
     # Save to JSON file in specified location
-    #with open(output_file_1, "w") as f:
-     #   json.dump({"max_dislocations": max_dislocation}, f, indent=4)
+    with open(output_file_1, "w") as f:
+        json.dump({"max_dislocations": max_dislocation}, f, indent=4)
 
-    #print(f"Max dislocations saved in {output_file_1}")
+    print(f"Max dislocations saved in {output_file_1}")
     
     # Create a complete path for the output JSON file
     output_file = os.path.join(save_dir, 'Grain_Boundary.json')
@@ -287,10 +282,17 @@ def extract_dislocation_cores(images, threshold=0.4, output_file="Grain_Boundary
     with open(output_file, "w") as f:
         json.dump(annotations, f, indent=4)
 
-    print(f"Annotations saved in {output_file}")
+    print(f"Labels saved")
 
 
-extract_dislocation_cores(images)  # Label creation
+# Define the directory in which to save images and the JSON file
+
+save_dir = r"C:\Users\p09276\Post_doc_Yen_Fred\Projet_Machine_Learning_Julien\GB_Cu_001_Generation\Generated_Images"   
+
+# Create folder if none exists
+os.makedirs(save_dir, exist_ok=True) 
+
+extract_dislocation_cores(images, save_dir)  # Label creation
 
 
 
