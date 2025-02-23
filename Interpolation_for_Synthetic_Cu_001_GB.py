@@ -1,6 +1,4 @@
 """
-Created on Thu Jan 30 13:07:03 2025
-
 @author: Dr Yen Fred WOGUEM & Dr Houssam KHAROUJI
 
 @description: This script interpolates the crystal structure on a grid using the G-method.

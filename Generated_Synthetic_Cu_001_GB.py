@@ -1,6 +1,4 @@
 """
-Created on Thu Jan 30 13:07:03 2025
-
 @author: Dr Yen Fred WOGUEM 
 
 @description: This script generates synthetic images of grain boundaries : 
