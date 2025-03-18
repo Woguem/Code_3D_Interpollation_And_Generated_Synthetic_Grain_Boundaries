@@ -16,4 +16,6 @@ Accurate atomic structure interpolation on the grid using mathematical technique
 
 Synthetic grain boundary generation based on interpolation results.
 
+The images generated are used for the deep learning task.
+
 
